@@ -1,1 +1,1 @@
-## Codeacademy very simple exercises
+### Codecademy silly exercises
