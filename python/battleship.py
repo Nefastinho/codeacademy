@@ -18,9 +18,10 @@ part of a ship off the side of the board.
 
 from random import randint
 
-def initialize_board(board):    
-  for x in range(5):
-    board.append(["O"] * 5)
+# Initialize a n by n board
+def initialize_board(board,n):    
+  for x in range(n):
+    board.append(["O"] * n)
   return board
 
 def print_board(board):
@@ -33,22 +34,45 @@ def random_row(board):
 def random_col(board):
   return randint(0, len(board[0]) - 1)
 
+# Generates a list of ships [x,y]
+def generate_ships(n):
+  ships = []  
+  for i in range(n):
+    ship_row = random_row(board)
+    ship_col = random_col(board)  
+    ships.append([ship_row,ship_col])
+  return ships
+
+# Checks if the coordinates provided matches a ship's location
+def check_ship(row,col,ships):
+  check = False  
+  for ship in ships:
+    if (row == ship[0]) & (col == ship[1]):
+      check = True
+      break
+  return check    
+
+# Prints the user's board with the ship's locations
+def print_solutions(board,ships):
+  for ship in ships:
+    board[ship[0]][ship[1]] = "S"
+  print_board(board)  
+
+# Create the board and ships
 board = []
-initialize_board(board)
+initialize_board(board,5)
+ships = generate_ships(5)
 print_board(board)
 
-ship_row = random_row(board)
-ship_col = random_col(board)
-print ship_row
-print ship_col
-
+# Game loop
 for turn in range(4):
   print "Turn: %s" % (turn + 1)  
   guess_row = int(raw_input("Guess Row: "))
   guess_col = int(raw_input("Guess Col: "))
 
-  if guess_row == ship_row and guess_col == ship_col:
+  if check_ship(guess_row,guess_col,ships):
     print "Congratulations! You sunk my battleship!"
+    print_solutions(board,ships)
     break
   else:
     if (guess_row < 0 or guess_row > 4) or (guess_col < 0 or guess_col > 4):
@@ -60,5 +84,7 @@ for turn in range(4):
       board[guess_row][guess_col] = "X"
     if turn == 3:
       print "Game Over"
+      print_solutions(board,ships)
+      break
     
   print_board(board)
